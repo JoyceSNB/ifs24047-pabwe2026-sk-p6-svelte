@@ -3,6 +3,7 @@
   import { Plus, Trash2, Search } from "lucide-svelte";
   import { linkTrees, loading, fetchLinkTrees, removeLinkTree, removeAllLinkTrees } from "../states/linkTreesStore.js";
   import { profile } from "../../auth/states/authStore.js";
+  import { assetUrl } from "../../../helpers/apiHelper.js";
   import { showConfirmDialog, showErrorDialog, showSuccessDialog, formatDate } from "../../../helpers/toolsHelper.js";
   import Link from "../../common/components/Link.svelte";
   import AddModal from "../modals/AddModal.svelte";
@@ -71,7 +72,7 @@
   <ul class="grid gap-3 sm:grid-cols-2">
     {#each filtered as l (l.id)}
       <li class="bg-white rounded-xl shadow-sm overflow-hidden">
-        {#if l.cover}<img src={l.cover} alt={l.title} class="h-28 w-full object-cover" />{/if}
+        {#if l.cover}<img src={assetUrl(l.cover)} alt={l.title} class="h-28 w-full object-cover" />{/if}
         <div class="p-4">
           <div class="flex justify-between items-start">
             <Link href={`/link-trees/${l.id}`} class="font-semibold text-indigo-600">{l.title}</Link>

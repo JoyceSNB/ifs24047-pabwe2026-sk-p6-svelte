@@ -3,6 +3,7 @@
   import { Pencil, Trash2, Plus, ExternalLink, Image } from "lucide-svelte";
   import { linkTree, loading, fetchLinkTree, removeItem } from "../states/linkTreesStore.js";
   import { profile } from "../../auth/states/authStore.js";
+  import { assetUrl } from "../../../helpers/apiHelper.js";
   import { showConfirmDialog, showErrorDialog } from "../../../helpers/toolsHelper.js";
   import Link from "../../common/components/Link.svelte";
   import ChangeModal from "../modals/ChangeModal.svelte";
@@ -37,7 +38,7 @@
   <p class="text-slate-600">Link tree tidak ditemukan. <Link href="/" class="text-indigo-600">Kembali</Link></p>
 {:else}
   <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-    {#if $linkTree.cover}<img src={$linkTree.cover} alt={$linkTree.title} class="h-44 w-full object-cover" />{/if}
+    {#if $linkTree.cover}<img src={assetUrl($linkTree.cover)} alt={$linkTree.title} class="h-44 w-full object-cover" />{/if}
     <div class="p-5">
       <div class="flex flex-wrap justify-between gap-2">
         <h1 class="text-2xl font-bold">{$linkTree.title}</h1>

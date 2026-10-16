@@ -101,7 +101,7 @@ Base URL: `https://open-api.delcom.org/api/v1`. Respons dianggap berhasil bila `
    | Variabel | Keterangan | Contoh |
    |---|---|---|
    | `VITE_DELCOM_BASEURL` | URL dasar Delcom API | `https://open-api.delcom.org/api/v1` |
-   | `APP_PORT` | Port server dev/preview | `3004` |
+   | `APP_PORT` | Port server dev/preview | `3000` |
 
    Jika `VITE_DELCOM_BASEURL` tidak diisi, aplikasi memakai `https://open-api.delcom.org/api/v1`.
 
@@ -111,7 +111,7 @@ Base URL: `https://open-api.delcom.org/api/v1`. Respons dianggap berhasil bila `
    bun run dev
    ```
 
-   Buka <http://localhost:3004>.
+   Buka <http://localhost:3000>.
 
 ### Skrip
 

@@ -9,8 +9,8 @@ export default defineConfig(({ mode }) => {
   const baseUrl = env.VITE_DELCOM_BASEURL || "https://open-api.delcom.org/api/v1";
   return {
     plugins: [svelte({ prebundleSvelteLibraries: false }), tailwindcss(), svelteTesting()],
-    server: { port: Number(env.APP_PORT) || 3004 },
-    preview: { port: Number(env.APP_PORT) || 3004 },
+    server: { port: Number(env.APP_PORT) || 3000 },
+    preview: { port: Number(env.APP_PORT) || 3000 },
     build: { chunkSizeWarningLimit: 1500 },
     define: {
       // URL absolut Delcom (untuk aset/gambar)

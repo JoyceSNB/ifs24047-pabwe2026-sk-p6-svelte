@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { apiFetch, getAccessToken, putAccessToken, removeAccessToken } from "./apiHelper.js";
+import { apiFetch, getAccessToken, putAccessToken, removeAccessToken, assetUrl } from "./apiHelper.js";
 
 beforeEach(() => { localStorage.clear(); vi.restoreAllMocks(); });
 
@@ -23,5 +23,11 @@ describe("apiHelper", () => {
     expect((await apiFetch("/x", { form: new FormData() })).ok).toBe(false);
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("x")));
     expect((await apiFetch("/x")).message).toMatch(/Gagal/);
+  });
+  it("assetUrl: kosong, absolut, relatif", () => {
+    expect(assetUrl(null)).toBe("");
+    expect(assetUrl("https://x.id/a.png")).toBe("https://x.id/a.png");
+    expect(assetUrl("/uploads/a.png")).toMatch(/^https?:\/\/[^/]+\/uploads\/a\.png$/);
+    expect(assetUrl("uploads/a.png")).toMatch(/^https?:\/\/[^/]+\/uploads\/a\.png$/);
   });
 });

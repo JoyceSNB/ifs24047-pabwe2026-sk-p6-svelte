@@ -1,6 +1,7 @@
 <script>
   import { profile, loadProfile } from "../../auth/states/authStore.js";
   import { updateMeApi, updatePhotoApi, updatePasswordApi } from "../api/userApi.js";
+  import { assetUrl } from "../../../helpers/apiHelper.js";
   import { useInput } from "../../../hooks/useInput.js";
   import { showErrorDialog, showSuccessDialog } from "../../../helpers/toolsHelper.js";
 
@@ -38,7 +39,7 @@
 <h1 class="text-2xl font-bold mb-4">Profil</h1>
 <div class="grid gap-6 md:grid-cols-2">
   <form onsubmit={saveData} class="bg-white rounded-xl p-5 shadow-sm space-y-3">
-    {#if $profile?.photo}<img src={$profile.photo} alt="Foto profil" class="w-20 h-20 rounded-full object-cover" />{/if}
+    {#if $profile?.photo}<img src={assetUrl($profile.photo)} alt="Foto profil" class="w-20 h-20 rounded-full object-cover" />{/if}
     <input type="file" accept="image/*" aria-label="Unggah foto profil" onchange={savePhoto} class="text-sm" />
     <input bind:value={$name} placeholder="Nama" required class="w-full border rounded-lg px-3 py-2" />
     <input type="email" bind:value={$email} placeholder="Email" required class="w-full border rounded-lg px-3 py-2" />

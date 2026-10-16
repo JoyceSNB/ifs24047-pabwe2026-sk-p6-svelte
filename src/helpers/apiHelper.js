@@ -23,3 +23,10 @@ export async function apiFetch(path, { method = "GET", body, form } = {}) {
     return { ok: false, message: "Gagal terhubung ke server", data: null };
   }
 }
+
+/** Ubah path aset Delcom (cover, foto) menjadi URL absolut. */
+export function assetUrl(path) {
+  if (!path) return "";
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${new URL(DELCOM_BASEURL).origin}/${path.replace(/^\//, "")}`;
+}

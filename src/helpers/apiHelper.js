@@ -24,9 +24,9 @@ export async function apiFetch(path, { method = "GET", body, form } = {}) {
   }
 }
 
-/** Ubah path aset Delcom (cover, foto) menjadi URL absolut. */
+/** Ubah path aset Delcom (cover, foto) menjadi URL absolut (selalu https). */
 export function assetUrl(path) {
   if (!path) return "";
-  if (/^https?:\/\//i.test(path)) return path;
+  if (/^https?:\/\//i.test(path)) return path.replace(/^http:\/\//i, "https://");
   return `${new URL(DELCOM_BASEURL).origin}/${path.replace(/^\//, "")}`;
 }

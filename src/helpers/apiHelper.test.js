@@ -24,9 +24,10 @@ describe("apiHelper", () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("x")));
     expect((await apiFetch("/x")).message).toMatch(/Gagal/);
   });
-  it("assetUrl: kosong, absolut, relatif", () => {
+  it("assetUrl: kosong, absolut, http jadi https, relatif", () => {
     expect(assetUrl(null)).toBe("");
     expect(assetUrl("https://x.id/a.png")).toBe("https://x.id/a.png");
+    expect(assetUrl("http://x.id/a.png")).toBe("https://x.id/a.png");
     expect(assetUrl("/uploads/a.png")).toMatch(/^https?:\/\/[^/]+\/uploads\/a\.png$/);
     expect(assetUrl("uploads/a.png")).toMatch(/^https?:\/\/[^/]+\/uploads\/a\.png$/);
   });

@@ -1,0 +1,145 @@
+# Delcom Link Tree
+
+Aplikasi web untuk mengumpulkan dan membagikan semua tautan penting dalam satu tempat, mirip Linktree. Pengguna dapat mendaftar, masuk, membuat *link tree*, mengunggah sampul, dan mengelola daftar tautan di dalamnya.
+
+Proyek ini dikerjakan untuk mata kuliah **Pengembangan Aplikasi Berbasis Web (PABWE) 2026**, Praktikum Pertemuan 6 (Studi Kasus 1), dengan data dari [Delcom Open API](https://open-api.delcom.org/docs/1.0/api-link-trees).
+
+## Fitur
+
+- **Autentikasi**: registrasi, login, dan logout. Token disimpan di `localStorage`.
+- **Link Tree**: tambah, lihat, ubah, hapus satu, dan hapus semua milik sendiri.
+  - Tipe: `public`, `unlisted`, atau `private`.
+  - Ubah gambar sampul (cover).
+  - Pencarian berdasarkan judul, filter "Milik saya", dan kartu statistik per tipe.
+- **Item tautan**: tambah, ubah, dan hapus tautan di dalam link tree. Hanya pemilik yang melihat tombol aksi.
+- **Pengguna**: daftar semua pengguna terdaftar.
+- **Profil**: ubah nama dan email, unggah foto, serta ganti kata sandi.
+- **Halaman 404** untuk rute yang tidak dikenal.
+
+## Teknologi
+
+| Kebutuhan | Pustaka |
+|---|---|
+| Framework UI | Svelte 5 (runes: `$state`, `$derived`, `$effect`) |
+| Build tool | Vite 8 |
+| Styling | Tailwind CSS 4 |
+| Ikon | lucide-svelte |
+| Dialog | SweetAlert2 (dimuat secara lazy) |
+| Pengujian | Vitest, Testing Library, jsdom |
+| Package manager | Bun |
+
+Aplikasi memakai **router kustom** berbasis History API dan **Svelte store** untuk state, tanpa library routing atau state management tambahan.
+
+## Struktur Proyek
+
+```
+src/
+├── main.js              # titik masuk, mount App
+├── App.svelte           # auth guard + pemilih layout/halaman
+├── router.js            # navigate, currentPath, resolveRoute
+├── index.css
+├── helpers/
+│   ├── apiHelper.js     # pembungkus fetch + manajemen token
+│   └── toolsHelper.js   # dialog SweetAlert2 + formatDate
+├── hooks/
+│   └── useInput.js      # hook input formulir
+└── features/
+    ├── auth/            # api, layouts, pages (login/register), states
+    ├── linktrees/       # api, components, layouts, modals, pages, states
+    ├── users/           # api, pages (daftar pengguna, profil)
+    └── common/          # Link, NotFoundPage
+```
+
+Setiap fitur dipisah menjadi lapisan `api/` (panggilan HTTP), `states/` (store), `pages/`, `components/`, dan `modals/`. Hampir setiap berkas memiliki pasangan `*.test.js`.
+
+## Rute
+
+| Path | Halaman | Layout |
+|---|---|---|
+| `/auth/login` | Masuk | Auth |
+| `/auth/register` | Daftar | Auth |
+| `/` | Semua Link Tree | Aplikasi |
+| `/link-trees/:linkTreeId` | Detail Link Tree | Aplikasi |
+| `/users` | Pengguna | Aplikasi |
+| `/profile` | Profil | Aplikasi |
+| lainnya | 404 | Aplikasi |
+
+Halaman layout aplikasi hanya dapat diakses setelah login, dan halaman autentikasi akan mengalihkan pengguna yang sudah login ke `/`.
+
+## Endpoint API yang Digunakan
+
+Base URL: `https://open-api.delcom.org/api/v1`. Respons dianggap berhasil bila `status === "success"`, dengan header `Authorization: Bearer <token>`.
+
+| Area | Endpoint |
+|---|---|
+| Auth | `POST /auth/login`, `POST /auth/register` |
+| Pengguna | `GET /users`, `GET /users/me`, `PUT /users/me`, `POST /users/me/photo`, `PUT /users/me/password` |
+| Link tree | `GET /link-trees`, `GET /link-trees/:id`, `POST /link-trees`, `PUT /link-trees/:id`, `DELETE /link-trees/:id`, `DELETE /link-trees` |
+| Sampul | `POST /link-trees/:id/cover` |
+| Item | `POST /link-trees/:id/items`, `PUT /link-trees/:id/items/:itemId`, `DELETE /link-trees/:id/items/:itemId` |
+
+## Menjalankan Proyek
+
+### Prasyarat
+
+- [Bun](https://bun.sh) (atau Node.js 20+ dengan npm)
+
+### Langkah
+
+1. Pasang dependensi:
+
+   ```bash
+   bun install
+   ```
+
+2. Salin berkas lingkungan, lalu sesuaikan bila perlu:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   | Variabel | Keterangan | Contoh |
+   |---|---|---|
+   | `VITE_DELCOM_BASEURL` | URL dasar Delcom API | `https://open-api.delcom.org/api/v1` |
+   | `APP_PORT` | Port server dev/preview | `3004` |
+
+   Jika `VITE_DELCOM_BASEURL` tidak diisi, aplikasi memakai `https://open-api.delcom.org/api/v1`.
+
+3. Jalankan mode pengembangan:
+
+   ```bash
+   bun run dev
+   ```
+
+   Buka <http://localhost:3004>.
+
+### Skrip
+
+| Perintah | Fungsi |
+|---|---|
+| `bun run dev` | Server pengembangan |
+| `bun run build` | Build produksi ke `dist/` |
+| `bun run preview` | Pratinjau hasil build |
+| `bun run test` | Menjalankan seluruh pengujian sekali |
+| `bun run test:watch` | Pengujian mode watch |
+| `bun run test:coverage` | Pengujian dengan laporan coverage |
+
+> Gunakan `bun run test`, bukan `bun test`, agar Vitest yang berjalan.
+
+## Pengujian
+
+Pengujian memakai Vitest dengan jsdom dan Testing Library. Ambang coverage diatur ke **100%** untuk *statements*, *branches*, *functions*, dan *lines*:
+
+```bash
+bun run test:coverage
+```
+
+Laporan tersedia dalam format teks, JSON, HTML, dan LCOV di folder `coverage/`.
+
+## Deployment
+
+Proyek siap di-deploy ke **Vercel**. Pada build produksi, request API dikirim ke `/delcom-api/...` (same-origin), lalu `vercel.json` meneruskannya ke `https://open-api.delcom.org/api/v1/...`. Dengan cara ini tidak ada request lintas origin sehingga masalah CORS dan *preflight* dapat dihindari. Semua path selain `/delcom-api/` diarahkan ke `index.html` agar router sisi klien berfungsi.
+
+## Lisensi
+
+Proyek ini dibuat untuk keperluan tugas perkuliahan.

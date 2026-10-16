@@ -18,6 +18,8 @@ export default defineConfig(({ mode }) => {
       // URL untuk request API: di production lewat proxy same-origin (/delcom-api, lihat vercel.json)
       // sehingga tidak ada request preflight CORS.
       DELCOM_API_URL: JSON.stringify(mode === "production" ? "/delcom-api" : baseUrl),
+      // Basis URL aset (cover/foto): di production lewat proxy same-origin (/delcom-assets)
+      DELCOM_ASSET_URL: JSON.stringify(mode === "production" ? "/delcom-assets" : new URL(baseUrl).origin),
     },
     test: {
       globals: true,

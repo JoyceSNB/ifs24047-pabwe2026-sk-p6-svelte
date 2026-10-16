@@ -24,9 +24,12 @@ export async function apiFetch(path, { method = "GET", body, form } = {}) {
   }
 }
 
-/** Ubah path aset Delcom (cover, foto) menjadi URL absolut (selalu https). */
+/** Ubah path aset Delcom (cover, foto) menjadi URL gambar. Aset milik Delcom dilewatkan proxy same-origin di production. */
 export function assetUrl(path) {
   if (!path) return "";
-  if (/^https?:\/\//i.test(path)) return path.replace(/^http:\/\//i, "https://");
-  return `${new URL(DELCOM_BASEURL).origin}/${path.replace(/^\//, "")}`;
+  const origin = new URL(DELCOM_BASEURL).origin;
+  const abs = /^https?:\/\//i.test(path)
+    ? path.replace(/^http:\/\//i, "https://")
+    : `${origin}/${path.replace(/^\//, "")}`;
+  return abs.startsWith(`${origin}/`) ? `${DELCOM_ASSET_URL}${abs.slice(origin.length)}` : abs;
 }

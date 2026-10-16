@@ -28,6 +28,8 @@ describe("apiHelper", () => {
     expect(assetUrl(null)).toBe("");
     expect(assetUrl("https://x.id/a.png")).toBe("https://x.id/a.png");
     expect(assetUrl("http://x.id/a.png")).toBe("https://x.id/a.png");
+    expect(assetUrl("http://x.id/a.png")).toBe("https://x.id/a.png");
+    expect(assetUrl(`${new URL(DELCOM_BASEURL).origin}/img/a.png`)).toBe(`${DELCOM_ASSET_URL}/img/a.png`);
     expect(assetUrl("/uploads/a.png")).toMatch(/^https?:\/\/[^/]+\/uploads\/a\.png$/);
     expect(assetUrl("uploads/a.png")).toMatch(/^https?:\/\/[^/]+\/uploads\/a\.png$/);
   });

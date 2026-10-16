@@ -20,6 +20,8 @@ export default defineConfig(({ mode }) => {
       DELCOM_API_URL: JSON.stringify(mode === "production" ? "/delcom-api" : baseUrl),
       // Basis URL aset (cover/foto): di production lewat proxy same-origin (/delcom-assets)
       DELCOM_ASSET_URL: JSON.stringify(mode === "production" ? "/delcom-assets" : new URL(baseUrl).origin),
+      // Origin server Delcom yang menyimpan aset (tidak bergantung env var di hosting)
+      DELCOM_ORIGIN: JSON.stringify(mode === "production" ? "https://open-api.delcom.org" : new URL(baseUrl).origin),
     },
     test: {
       globals: true,
